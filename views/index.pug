@@ -1,0 +1,51 @@
+extends layout
+
+block content
+  h1= title
+  p Welcome to #{title}
+
+  h2#numClientes(style={display:'block'}) 
+
+  div(style={display:'block', margin:'25px 0 0 0'})
+    label Nombre Usuario: 
+    input#inputUsuario(type="text")
+  div
+    label Mensaje: 
+    input#inputMensaje(type="text")
+  button#btnEnviar Enviar
+  div
+    ul#mensajes
+  //- Cargar libreria SOCKET.IO de comunicacion 
+  script(src="/socket.io/socket.io.js")
+  //- Acciones Script dentro del navegador cliente
+  script.
+    const socket = io();
+    const inputUsuario = document.getElementById('inputUsuario');
+    const inputMensaje = document.getElementById('inputMensaje');
+    const btnEnviar = document.getElementById('btnEnviar');
+    const mensajes = document.getElementById('mensajes');
+    const numClientes = document.getElementById('numClientes');
+
+    //- Emitir al servidor Mensaje del Usuario del Navegador Cliente
+    btnEnviar.addEventListener('click', ()=>{
+      let datos = { usuario: inputUsuario.value, mensaje: inputMensaje.value};
+      //- Params: 'nombre evento', objeto de los datos del evento
+      socket.emit('mensaje_cliente', datos);
+    });
+    //- Leemos el evento de vuelta: Nos suscribimos 'on' al evento de vuelta
+    //- Params: 'nombre evento', objeto de los datos del evento
+    socket.on('mensaje_cliente', data=>{
+      debugger;
+      const li = document.createElement('li');
+      li.innerText = `${data.usuario}: ${data.mensaje}`;
+
+      mensajes.append(li);
+    });
+
+    socket.on('num_clientes', num=>{
+      debugger;
+      const numClientes = document.getElementById('numClientes');
+      numClientes.innerText = `Clientes conectados: ${num}`;
+    });
+
+    
