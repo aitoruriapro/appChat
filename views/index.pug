@@ -1,7 +1,7 @@
 extends layout
 
 block content
-  h1= title
+  h1 #{title} #{appName}
   p Welcome to #{title}
 
   h2#numClientes(style={display:'block'}) 
@@ -35,7 +35,6 @@ block content
     //- Leemos el evento de vuelta: Nos suscribimos 'on' al evento de vuelta
     //- Params: 'nombre evento', objeto de los datos del evento
     socket.on('mensaje_cliente', data=>{
-      debugger;
       const li = document.createElement('li');
       li.innerText = `${data.usuario}: ${data.mensaje}`;
 
@@ -43,7 +42,6 @@ block content
     });
 
     socket.on('num_clientes', num=>{
-      debugger;
       const numClientes = document.getElementById('numClientes');
       numClientes.innerText = `Clientes conectados: ${num}`;
     });
